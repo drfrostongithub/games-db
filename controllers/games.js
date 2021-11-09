@@ -11,15 +11,15 @@ class GamesController {
         }
     }
 
-    // getGameById(req, res) {
-    //     const gameId = req.params.id;
-    //     const game = this.games.getGameById(gameId);
-    //     if (game) {
-    //         res.send(game);
-    //     } else {
-    //         res.status(404).send({message: 'Game not found'});
-    //     }
-    // }
+    static async getGameById(req, res, next) {
+        const gameId = req.params.gameId;
+        try {
+            const getOneGame = await GameList.findById(gameId)
+            res.status(200).json({success: true, data: getOneGame})
+        } catch (error) {
+            res.status(409).json({success: false, data: [], error: error})
+        }
+    }
 
     static async addGame(req, res) {
         const { name, description, release_date, platform, ratings } = req.body
