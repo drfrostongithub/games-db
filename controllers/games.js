@@ -39,26 +39,34 @@ class GamesController {
         }
     }
 
-    // updateGame(req, res) {
-    //     const gameId = req.params.id;
-    //     const game = req.body;
-    //     const updatedGame = this.games.updateGame(gameId, game);
-    //     if (updatedGame) {
-    //         res.send(updatedGame);
-    //     } else {
-    //         res.status(404).send({message: 'Game not found'});
-    //     }
-    // }
+    static async updateGame(req, res) {
+        const gameId = req.params.gameId;
+        const { name, description, release_date, platform, ratings } = req.body
+        try {
+            const updateGame = await GameList.findByIdAndUpdate(gameId, {
+                name,
+                description,
+                release_date,
+                platform,
+                ratings
+            })
+            res.status(200).json({success: true, data: updateGame})
+        } catch (error) {
+            console.error(error)
+            res.status(409).json({success: false, data: [], error: error})
+        }
+    }
 
-    // deleteGame(req, res) {
-    //     const gameId = req.params.id;
-    //     const deletedGame = this.games.deleteGame(gameId);
-    //     if (deletedGame) {
-    //         res.send(deletedGame);
-    //     } else {
-    //         res.status(404).send({message: 'Game not found'});
-    //     }
-    // }
+    static async deleteGame(req, res) {
+        const gameId = req.params.gameId;
+        try {
+            const deleteOneGame = await GameList.deleteOne({_id: gameId})
+            res.status(200).json({success: true, data: deleteOneGame.deletedCount===1 ? "Game Info Deleted": "Game Cannot Deleted"})
+        } catch (error) {
+            console.error(error)
+            res.status(409).json({success: false, data: [], error: error})
+        }
+    }
 }
 
 module.exports = GamesController
